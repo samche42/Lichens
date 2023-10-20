@@ -8,8 +8,6 @@
 #SBATCH --mem-per-cpu=20gb # request memory, adjustable
 #SBATCH --error=special_cases.%J.err
 #SBATCH --output=special_cases.%J.out
-#SBATCH --mail-user=samche42@gmail.com
-#SBATCH --mail-type=END,FAIL
 
 cd Special_cases
 
