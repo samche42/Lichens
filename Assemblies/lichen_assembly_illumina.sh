@@ -8,10 +8,6 @@
 #SBATCH --mem-per-cpu=12gb # request memory, adjustable
 #SBATCH --error=illumina_assemblies.%J.err
 #SBATCH --output=illumina_assemblies.%J.out
-#SBATCH --mail-user=samche42@gmail.com
-#SBATCH --mail-type=END,FAIL
-
-
 
 #Define flags
 while getopts "a:" flag
