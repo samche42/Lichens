@@ -8,8 +8,6 @@
 #SBATCH --mem-per-cpu=20gb # request memory, adjustable
 #SBATCH --error=iontorrent_assembly.%J.err
 #SBATCH --output=iontorrent_assembly.%J.out
-#SBATCH --mail-user=samche42@gmail.com
-#SBATCH --mail-type=END,FAIL
 
 cd /home/simonsonsc/Lichen_assemblies/Ion_torrent_assemblies
 
