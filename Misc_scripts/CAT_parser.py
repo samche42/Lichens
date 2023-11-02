@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pandas as pd
 import os
 
@@ -27,5 +28,10 @@ tax_summary = tax_df.groupby('Sample')['Superkingdom'].value_counts(dropna=False
 tax_summary["Unknown"] = tax_summary["unknown"] + tax_summary["no support"]
 tax_summary.drop(['unknown','no support'], axis=1, inplace=True)
 
+kingdom_length_summary = tax_df.groupby(['Sample', 'Superkingdom'])['Contig_length'].sum().unstack(fill_value=0).reset_index()
+kingdom_length_summary["Unknown"] = kingdom_length_summary["unknown"] + kingdom_length_summary["no support"]
+kingdom_length_summary.drop(['unknown','no support'], axis=1, inplace=True)
+
 tax_df.to_csv('contig_taxonomy.txt', sep='\t', index=False)
 tax_summary.to_csv('kingdom_count.txt', sep='\t', index=False)
+kingdom_length_summary.to_csv('kingdom_length.txt', sep='\t', index=False)
