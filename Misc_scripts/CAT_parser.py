@@ -28,6 +28,7 @@ tax_summary = tax_df.groupby('Sample')['Superkingdom'].value_counts(dropna=False
 tax_summary["Unknown"] = tax_summary["unknown"] + tax_summary["no support"]
 tax_summary.drop(['unknown','no support'], axis=1, inplace=True)
 
+tax_df['Contig_length'] = tax_df['Contig_length'].astype(int)
 kingdom_length_summary = tax_df.groupby(['Sample', 'Superkingdom'])['Contig_length'].sum().unstack(fill_value=0).reset_index()
 kingdom_length_summary["Unknown"] = kingdom_length_summary["unknown"] + kingdom_length_summary["no support"]
 kingdom_length_summary.drop(['unknown','no support'], axis=1, inplace=True)
