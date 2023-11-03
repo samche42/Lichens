@@ -32,3 +32,14 @@ kingdom_coverage_summary.to_csv('kingdom_coverage.txt', sep='\t', index=True) #W
 bacterial_df = tax_df.loc[tax_df['Superkingdom'] == 'Bacteria']
 phyla = bacterial_df.groupby(['Sample','Phylum'])['Relative_Length_corrected_coverage'].sum().unstack(fill_value=0).reset_index()
 phyla.to_csv('bacterial_phyla_coverage.txt', sep='\t', index=True)
+
+eukary_df = tax_df.loc[tax_df['Superkingdom'] == 'Eukaryota']
+eu_phyla = eukary_df.groupby(['Sample', 'Phylum'])['Relative_Length_corrected_coverage'].sum().unstack(fill_value=0).reset_index()
+eu_phyla.to_csv('eukary_phyla_coverage.txt', sep='\t', index=True)
+
+#Finding most abundant phyla
+column_sums = phyla.iloc[:, 2:].sum()
+column_sums.sort_values(ascending=False)
+
+column_sums = eu_phyla.iloc[:, 2:].sum()
+column_sums.sort_values(ascending=False)
