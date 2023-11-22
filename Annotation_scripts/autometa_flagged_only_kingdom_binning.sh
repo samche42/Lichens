@@ -256,44 +256,6 @@ else
    echo "ORF generation failed"
 fi
 
-#Check if marker files are pressed, if not, press them
-echo
-echo "Checking if hmm files are pressed..."
-if [ -f "$marker_db/bacteria.single_copy.hmm.h3i" ]; then
-    echo "Bacterial hmm files are pressed, moving on..."
-else
-    echo "Bacterial hmm files not pressed. Pressing files now..."
-    hmmpress -f $marker_db/bacteria.single_copy.hmm
-fi
-
-
-if [ -f "$marker_db/archaea.single_copy.hmm.h3i" ]; then
-    echo "Archaeal hmm files are pressed, moving on..."
-else
-    echo "Archaeal hmm files not pressed. Pressing files now..."
-    hmmpress -f $marker_db/archaea.single_copy.hmm
-fi
-
-kingdoms=(bacteria archaea)
-
-# NOTE: We iterate through both sets of markers for binning both bacterial and archeal kingdoms
-for kingdom in ${kingdoms[@]};do
-    # kingdom-specific output:
-    hmmscan="${outdir}/${simple_name}.${kingdom}.hmmscan.tsv"
-    markers="${outdir}/${simple_name}.${kingdom}.markers.tsv"
-
-    # script:
-    autometa-markers \
-        --orfs $orfs \
-        --hmmscan $hmmscan \
-        --dbdir $marker_db \
-        --out $markers \
-        --kingdom $kingdom \
-        --parallel \
-        --cpus $cpus \
-        --seed $seed && echo "autometa-markers completed successfully for ${kingdom}"
-done
-
 # Step 4.1: Determine ORF lowest common ancestor (LCA) amongst top hits
 
 #Run blastp
