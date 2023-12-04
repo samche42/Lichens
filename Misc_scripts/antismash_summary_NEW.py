@@ -1,4 +1,4 @@
-#Use python3 antismash_summary.py /path/to/gbk/files
+#Use python3 antismash_summary_NEW.py /path/to/gbk/files
 
 #!/usr/bin/env python3
 import sys
