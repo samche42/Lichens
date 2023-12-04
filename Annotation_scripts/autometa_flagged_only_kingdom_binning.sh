@@ -1,17 +1,19 @@
 #!/usr/bin/bash
-#SBATCH --partition=
+#SBATCH --partition=norm
 #SBATCH --job-name=autometa
 #SBATCH --time=14-00:00:00
 #SBATCH -N 1 # Nodes
 #SBATCH -n 1 # Tasks # try to increase task number and see any change
 #SBATCH --cpus-per-task=12
 #SBATCH --mem-per-cpu=2gb # request memory, adjustable
-#SBATCH --error=autometa.%J.err
-#SBATCH --output=autometa.%J.out
+#SBATCH --error=/home/simonsonsc/Slurm_scripts/log_files/autometa.%J.err
+#SBATCH --output=/home/simonsonsc/Slurm_scripts/log_files/autometa.%J.out
+#SBATCH --mail-user=samche42@gmail.com
+#SBATCH --mail-type=END,FAIL
 
-cd Lichen_assemblies
+cd /mnt/projects/abcs-dssb/mtp/slurm/simonsonsc/Lichen_project/Acceptable_assemblies/Trial_folder
 
-source activate autometa
+source /mnt/nasapps/development/python/miniconda3/3.10/bin/activate autometa
 
 usage()
 {
@@ -304,3 +306,7 @@ autometa-taxonomy \
     --dbdir $ncbi && echo "autometa-taxonomy completed successfully"
 
 conda deactivate
+
+mv /mnt/projects/abcs-dssb/mtp/slurm/simonsonsc/Lichen_project/Acceptable_assemblies/Trial_folder/${simple_name}_Autometa_Output/${simple_name}.taxonomy.tsv /mnt/projects/abcs-dssb/mtp/slurm/simonsonsc/Lichen_project/Acceptable_assemblies/Trial_folder/
+
+rm -r /mnt/projects/abcs-dssb/mtp/slurm/simonsonsc/Lichen_project/Acceptable_assemblies/Trial_folder/${simple_name}_Autometa_Output/
