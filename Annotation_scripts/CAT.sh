@@ -8,8 +8,6 @@
 #SBATCH --mem-per-cpu=40gb # request memory, adjustable
 #SBATCH --error=CAT.%J.err
 #SBATCH --output=CAT.%J.out
-#SBATCH --mail-user=samche42@gmail.com
-#SBATCH --mail-type=FAIL
 
 usage()
 {
