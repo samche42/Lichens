@@ -51,10 +51,14 @@ final_df['Final_classification'] = mostCommonVote
 kingdoms = ['Eukaryota', 'Unclassified', 'Bacteria', 'Archaea', 'Viruses']
 
 def extract_kingdom_contigs(fasta_file, kingdom):
-    contigs = final_df[final_df['Final_classification'] == kingdom]['contig'].tolist()
-    output_file = fasta_file.split("_")[0] + "_"+kingdom+".fasta"
-    records = (r for r in SeqIO.parse(fasta_file, "fasta") if r.id in contigs)
-    SeqIO.write(records, output_file, "fasta")
+    contig_ids = final_df.loc[final_df['Final_classification'] == kingdom, 'contig'] # Get contig IDs for the specified kingdom
+    contig_ids_set = set(contig_ids) # Create a set for faster membership checking
+    output_file = f"{fasta_file.split('_')[0]}_{kingdom}.fasta"
+    # Filter and write contigs directly based on membership in the set
+    with open(output_file, "w") as output_handle:
+        for record in SeqIO.parse(fasta_file, "fasta"):
+            if record.id in contig_ids_set:
+                SeqIO.write(record, output_handle, "fasta")
 
 for kingdom in kingdoms:
     extract_kingdom_contigs(args.accession+'_scaffolds.fasta', kingdom)
