@@ -10,7 +10,7 @@ parser.add_argument("-i", "--input_directory", help="Input directory path")
 args = parser.parse_args()
 
 input_directory = args.input_directory
-accessions = [(((os.path.splitext(file))[0]).split("_"))[0] for file in os.listdir(input_directory) if file.endswith("_Eukaryota.fasta")]
+accessions = [(((os.path.splitext(file))[0]).split("_"))[0] for file in os.listdir(input_directory) if file.endswith("Eukaryota_3000bp_removed.fasta")]
 
 def extract_kingdom_contigs(fasta_file, kingdom, function_df):
     contig_ids = function_df.loc[function_df['MMSeqs_kingdom'] == kingdom, 'contig'] # Get contig IDs for the specified kingdom
@@ -22,20 +22,26 @@ def extract_kingdom_contigs(fasta_file, kingdom, function_df):
             if record.id in contig_ids_set:
                 SeqIO.write(record, output_handle, "fasta")
 
-def get_phyla(accession,fasta_file,tax_file):
+def get_phyla(accession,fasta_file,tax_file,scaffold_file):
     # Extract headers from the FASTA file using SeqIO
     fasta_headers = []
+    scaffold_headers = []
     for record in SeqIO.parse(fasta_file, "fasta"):
         fasta_headers.append(record.id)
-    
+    for record in SeqIO.parse(scaffold_file, "fasta"):
+        scaffold_headers.append(record.id)
     # Create a pandas DataFrame with the headers in a 'contig' column
     df = pd.DataFrame({'contig': fasta_headers})
     df['cov'] = df.contig.str.split('_', expand=True)[6]
     df['length'] = df.contig.str.split('_', expand=True)[4]
     df = df.astype({'cov':'float','length':'float'})
-    total_coverage = df['cov'].sum()
+
+    scaffold_df = pd.DataFrame({'contig': scaffold_headers})
+    scaffold_df['cov'] = scaffold_df.contig.str.split('_', expand=True)[6]
+    scaffold_df = scaffold_df.astype({'cov':'float'})
+    total_coverage = scaffold_df['cov'].sum()
+
     df['rel_cov'] = df['cov']/total_coverage*100
-    df = df[df['length'] >= 3000]
     
     mmseqs_df = pd.read_csv(tax_file, sep = "\t", header=None,usecols=[0,8])
     mmseqs_df.columns = ['contig','MMSeqs_taxonomy']
@@ -55,10 +61,16 @@ def get_phyla(accession,fasta_file,tax_file):
     kingdoms = ['Fungi','Viridiplantae','Unclassified','Metazoa']
     for kingdom in kingdoms:
         extract_kingdom_contigs(fasta_file, kingdom,kingdom_df)
-    counts_df, abundance_df, length_df = pd.DataFrame(), pd.DataFrame(),pd.DataFrame()
-    counts_df[accession] = pd.DataFrame(final_df['MMSeqs_phylum'].value_counts())
-    abundance_df[accession] = final_df.groupby('MMSeqs_phylum')['rel_cov'].sum()
-    length_df[accession] = final_df.groupby('MMSeqs_phylum')['length'].sum()
+
+    counts_df = final_df.groupby('MMSeqs_phylum').count().loc[:, ['contig']]
+    counts_df = counts_df.reset_index()
+    counts_df = counts_df.rename(columns = {'contig':accession})
+    abundance_df = final_df.groupby('MMSeqs_phylum')['rel_cov'].sum()
+    abundance_df = abundance_df.reset_index()
+    abundance_df = abundance_df.rename(columns = {'contig':accession})
+    length_df = final_df.groupby('MMSeqs_phylum')['length'].sum()
+    length_df = length_df.reset_index()
+    length_df = length_df.rename(columns = {'contig':accession})
     return counts_df, abundance_df, length_df
 
 final_count_df = pd.DataFrame(columns =['MMSeqs_phylum'])
@@ -66,13 +78,11 @@ final_abund_df = pd.DataFrame(columns =['MMSeqs_phylum'])
 final_length_df = pd.DataFrame(columns =['MMSeqs_phylum'])
 
 for acc in accessions:
-    fasta_file = acc+"_Eukaryota.fasta"
+    print(acc)
+    scaffold_file = acc+"_scaffolds.fasta"
+    fasta_file = acc+"_Eukaryota_3000bp_removed.fasta"
     tax_file = acc+"_mmseqs_taxonomy_final.txt"
-    count,abund,length = get_phyla(acc,fasta_file,tax_file)
-    count = count.reset_index()
-    count = count.rename(columns={'index': 'MMSeqs_phylum'}) 
-    abund = abund.reset_index()
-    length= length.reset_index()
+    count,abund,length = get_phyla(acc,fasta_file,tax_file,scaffold_file)
     final_count_df = pd.merge(final_count_df, count, on = 'MMSeqs_phylum', how = 'outer')
     final_abund_df = pd.merge(final_abund_df, abund, on = 'MMSeqs_phylum', how = 'outer')
     final_length_df = pd.merge(final_length_df, length, on = 'MMSeqs_phylum', how = 'outer')
