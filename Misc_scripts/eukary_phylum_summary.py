@@ -81,7 +81,7 @@ for acc in accessions:
     scaffold_file = acc+"_scaffolds.fasta"
     fasta_file = acc+"_Eukaryota_3000bp_removed.fasta"
     tax_file = acc+"_mmseqs_taxonomy_final.txt"
-    if os.stat("file").st_size == 0: #If file is empty, merge in a column of zeros with as many rows as each final df currently has
+    if os.stat(fasta_file).st_size == 0: #If file is empty, merge in a column of zeros with as many rows as each final df currently has
         count = final_count_df.loc[:, ['MMSeqs_phylum']]
         rows_to_add_count = final_count_df.shape[0]
         count[accession] = [0]*rows_to_add_count
