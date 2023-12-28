@@ -78,11 +78,21 @@ final_abund_df = pd.DataFrame(columns =['MMSeqs_phylum'])
 final_length_df = pd.DataFrame(columns =['MMSeqs_phylum'])
 
 for acc in accessions:
-    print(acc)
     scaffold_file = acc+"_scaffolds.fasta"
     fasta_file = acc+"_Eukaryota_3000bp_removed.fasta"
     tax_file = acc+"_mmseqs_taxonomy_final.txt"
-    count,abund,length = get_phyla(acc,fasta_file,tax_file,scaffold_file)
+    if os.stat("file").st_size == 0: #If file is empty, merge in a column of zeros with as many rows as each final df currently has
+        count = final_count_df.loc[:, ['MMSeqs_phylum']]
+        rows_to_add_count = final_count_df.shape[0]
+        count[accession] = [0]*rows_to_add_count
+        abund = final_abund_df.loc[:, ['MMSeqs_phylum']]
+        rows_to_add_abund = final_abund_df.shape[0]
+        abund[accession] = [0]*rows_to_add_abund
+        length = final_length_df.loc[:, ['MMSeqs_phylum']]
+        rows_to_add_length = final_length_df.shape[0]
+        length[accession] = [0]*rows_to_add_length
+    else:
+        count,abund,length = get_phyla(acc,fasta_file,tax_file,scaffold_file)
     final_count_df = pd.merge(final_count_df, count, on = 'MMSeqs_phylum', how = 'outer')
     final_abund_df = pd.merge(final_abund_df, abund, on = 'MMSeqs_phylum', how = 'outer')
     final_length_df = pd.merge(final_length_df, length, on = 'MMSeqs_phylum', how = 'outer')
