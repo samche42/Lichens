@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pandas as pd
 import numpy as np
 from Bio import SeqIO
@@ -9,14 +10,14 @@ parser.add_argument("-a", "--accession", help="Full file path to kegg input file
 args = parser.parse_args()
 
 #Read in CAT file
-CAT_df = pd.read_csv("SRR13685122"+'.official_names.txt', sep = "\t", usecols=['# contig','superkingdom'])
+CAT_df = pd.read_csv(args.accession+'.official_names.txt', sep = "\t", usecols=['# contig','superkingdom'])
 CAT_df['superkingdom'] = CAT_df['superkingdom'].str.replace(':.*', '', regex=True)
 CAT_df.columns = ['contig','CAT_superkingdom']
 CAT_df['CAT_superkingdom'] = CAT_df['CAT_superkingdom'].replace(np.nan,'Unclassified')
 CAT_df['CAT_superkingdom'] = CAT_df['CAT_superkingdom'].str.replace('no support','Unclassified')
 
 #Read in MMSeqs2 file
-mmseqs_df = pd.read_csv("SRR13685122"+'_mmseqs_taxonomy_final.txt', sep = "\t", header=None,usecols=[0,8])
+mmseqs_df = pd.read_csv(args.accession+'_mmseqs_taxonomy_final.txt', sep = "\t", header=None,usecols=[0,8])
 mmseqs_df.columns = ['contig','MMSeqs_taxonomy']
 mmseqs_df['MMSeqs_superkingdom'] = mmseqs_df['MMSeqs_taxonomy'].str.split(';').str[1]
 mmseqs_df['MMSeqs_superkingdom'] = mmseqs_df['MMSeqs_superkingdom'].str.replace('d_', '')
