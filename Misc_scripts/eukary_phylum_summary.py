@@ -84,13 +84,13 @@ for acc in accessions:
     if os.stat(fasta_file).st_size == 0: #If file is empty, merge in a column of zeros with as many rows as each final df currently has
         count = final_count_df.loc[:, ['MMSeqs_phylum']]
         rows_to_add_count = final_count_df.shape[0]
-        count[accession] = [0]*rows_to_add_count
+        count[acc] = [0]*rows_to_add_count
         abund = final_abund_df.loc[:, ['MMSeqs_phylum']]
         rows_to_add_abund = final_abund_df.shape[0]
-        abund[accession] = [0]*rows_to_add_abund
+        abund[acc] = [0]*rows_to_add_abund
         length = final_length_df.loc[:, ['MMSeqs_phylum']]
         rows_to_add_length = final_length_df.shape[0]
-        length[accession] = [0]*rows_to_add_length
+        length[acc] = [0]*rows_to_add_length
     else:
         count,abund,length = get_phyla(acc,fasta_file,tax_file,scaffold_file)
     final_count_df = pd.merge(final_count_df, count, on = 'MMSeqs_phylum', how = 'outer')
