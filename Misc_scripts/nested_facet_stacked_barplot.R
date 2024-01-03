@@ -10,12 +10,13 @@ library(ggplot2)
 library(reshape2)
 library(ggh4x)
 
-data = read.csv("kingdom_count.txt", header=TRUE, sep ="\t")
-melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus","lichendex.organism"))
+data = read.csv("Kingdom_contig_counts_with_metadata.txt", header=TRUE, sep ="\t")
+melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus"))
 
 melted$Class <- factor(melted$Class, levels = unique(melted$Class))
 melted$Order <- factor(melted$Order, levels = unique(melted$Order))
 melted$Family <- factor(melted$Family, levels = unique(melted$Family))
+melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
 melted$Sample <- factor(melted$Sample, levels = unique(melted$Sample))
 
 ggplot() +
@@ -29,7 +30,7 @@ ggplot() +
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
 
-data = read.csv("kingdom_length.txt", header=TRUE, sep ="\t")
+data = read.csv("Kingdom_contig_length_with_metadata.txt", header=TRUE, sep ="\t")
 melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus","lichendex.organism"))
 
 melted$Class <- factor(melted$Class, levels = unique(melted$Class))
