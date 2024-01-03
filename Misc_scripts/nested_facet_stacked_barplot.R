@@ -11,7 +11,7 @@ library(reshape2)
 library(ggh4x)
 
 data = read.csv("Kingdom_contig_counts_with_metadata.txt", header=TRUE, sep ="\t")
-melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus"))
+melted = melt(data, id = c("Sample_name","Superkingdom","Phylum","Class","Order","Family","Genus","Species"))
 
 melted$Class <- factor(melted$Class, levels = unique(melted$Class))
 melted$Order <- factor(melted$Order, levels = unique(melted$Order))
@@ -31,11 +31,12 @@ ggplot() +
         axis.ticks.x=element_blank())
 
 data = read.csv("Kingdom_contig_length_with_metadata.txt", header=TRUE, sep ="\t")
-melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus","lichendex.organism"))
+melted = melt(data, id = c("Sample_name","Superkingdom","Phylum","Class","Order","Family","Genus","Species"))
 
 melted$Class <- factor(melted$Class, levels = unique(melted$Class))
 melted$Order <- factor(melted$Order, levels = unique(melted$Order))
 melted$Family <- factor(melted$Family, levels = unique(melted$Family))
+melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
 melted$Sample <- factor(melted$Sample, levels = unique(melted$Sample))
 
 ggplot() +
@@ -49,16 +50,17 @@ ggplot() +
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
 
-data = read.csv("kingdom_coverage.txt", header=TRUE, sep ="\t")
-melted = melt(data, id = c("Sample","Superkingdom","Phylum","Class","Order","Family","Genus","lichendex.organism"))
+data = read.csv("Kingdom_contig_abundance_with_metadata.txt", header=TRUE, sep ="\t")
+melted = melt(data, id = c("Sample_name","Superkingdom","Phylum","Class","Order","Family","Genus","Species"))
 
 melted$Class <- factor(melted$Class, levels = unique(melted$Class))
 melted$Order <- factor(melted$Order, levels = unique(melted$Order))
 melted$Family <- factor(melted$Family, levels = unique(melted$Family))
+melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
 melted$Sample <- factor(melted$Sample, levels = unique(melted$Sample))
 
 ggplot() +
-  geom_bar(data = melted,aes(x = Sample, y = value, fill = factor(variable, levels=c('Archaea','Bacteria','Unknown','Viruses','Eukaryota'))), stat = "identity", width = 1) +
+  geom_bar(data = melted,aes(x = Sample, y = value, fill = factor(variable, levels=c('Archaea','Bacteria','Unclassified','Viruses','Eukaryota'))), stat = "identity", width = 1) +
   theme_bw() +
   facet_nested(. ~ Class + Order +  Family, scales = "free", space = "free") +
   theme(strip.text.x = element_text(angle = 90,size=5),
@@ -66,7 +68,8 @@ ggplot() +
         panel.background = element_blank(),
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank())+
+        guides(fill = guide_legend(title = '')) 
 
 ###############################
 #
