@@ -54,8 +54,8 @@ def get_phyla(accession,fasta_file,tax_file,scaffold_file):
     length_df = length_df.reset_index()
     length_df = length_df.rename(columns = {'length':accession})
     abundance_df2 = final_df.groupby('MMSeqs_phylum')['rel_cov_over_3000'].sum()
-    abundance_df2 = abundance_df.reset_index()
-    abundance_df2 = abundance_df.rename(columns = {'rel_cov_over_3000':accession})
+    abundance_df2 = abundance_df2.reset_index()
+    abundance_df2 = abundance_df2.rename(columns = {'rel_cov_over_3000':accession})
     return counts_df, abundance_df, length_df, abundance_df2
 
 final_count_df = pd.DataFrame(columns =['MMSeqs_phylum'])
