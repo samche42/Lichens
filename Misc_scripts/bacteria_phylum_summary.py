@@ -32,7 +32,8 @@ def get_phyla(accession,fasta_file,tax_file,scaffold_file):
     scaffold_df = scaffold_df.astype({'cov':'float'})
     total_coverage = scaffold_df['cov'].sum()
     df['rel_cov'] = df['cov']/total_coverage*100
-    total_coverage_over_3000 = df['cov'].sum()
+    filtered_scaffold_df = scaffold_df[scaffold_df['length'] >= 3000]
+    total_coverage_over_3000 = filtered_scaffold_df['cov'].sum()
     df['rel_cov_over_3000'] = df['cov']/total_coverage_over_3000*100
     
     mmseqs_df = pd.read_csv(tax_file, sep = "\t", header=None,usecols=[0,8])
