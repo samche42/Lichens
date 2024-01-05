@@ -29,7 +29,8 @@ def get_phyla(accession,fasta_file,tax_file,scaffold_file):
 
     scaffold_df = pd.DataFrame({'contig': scaffold_headers})
     scaffold_df['cov'] = scaffold_df.contig.str.split('_', expand=True)[6]
-    scaffold_df = scaffold_df.astype({'cov':'float'})
+    scaffold_df['length'] = scaffold_df.contig.str.split('_', expand=True)[4]
+    scaffold_df = scaffold_df.astype({'cov':'float','length':'float'})
     total_coverage = scaffold_df['cov'].sum()
     df['rel_cov'] = df['cov']/total_coverage*100
     filtered_scaffold_df = scaffold_df[scaffold_df['length'] >= 3000]
