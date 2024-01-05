@@ -2,7 +2,7 @@
 
 ################################################################################################
 #
-# #TAXONOMIC CONTIG CLASSIFCATION (COUNT, LENGTH AND COVERAGE)
+# #TAXONOMIC SUPERKINGDOM CONTIG CLASSIFCATION (COUNT, LENGTH AND COVERAGE)
 #
 ################################################################################################
 
@@ -82,27 +82,6 @@ melted$Sample_name <- factor(melted$Sample_name, levels = unique(melted$Sample_n
 
 ggplot() +
   geom_bar(data = melted,aes(x = Sample_name, y = value, fill = factor(variable, levels=c('Bacteria','Archaea','Unclassified','Viruses','Eukaryota'))), stat = "identity", width = 1) +
-  theme_bw() +
-  facet_nested(. ~ Class + Order +  Family, scales = "free", space = "free") +
-  theme(strip.text.x = element_text(angle = 90,size=5),
-        panel.spacing=unit(0,"lines"),
-        panel.background = element_blank(),
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-        guides(fill = guide_legend(title = ''))
-
-data = read.csv("Eukary_phyla_abundances_over_3000bp_with_metadata.txt", header=TRUE, sep ="\t")
-melted = melt(data, id = c("Sample_name","Superkingdom","Phylum","Class","Order","Family","Genus","Species"))
-
-melted$Class <- factor(melted$Class, levels = unique(melted$Class))
-melted$Order <- factor(melted$Order, levels = unique(melted$Order))
-melted$Family <- factor(melted$Family, levels = unique(melted$Family))
-melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
-melted$Sample_name <- factor(melted$Sample_name, levels = unique(melted$Sample_name))
-
-ggplot() +
-  geom_bar(data = melted,aes(x = Sample_name, y = value, fill = factor(variable)), stat = "identity", width = 1) +
   theme_bw() +
   facet_nested(. ~ Class + Order +  Family, scales = "free", space = "free") +
   theme(strip.text.x = element_text(angle = 90,size=5),
