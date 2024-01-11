@@ -1,4 +1,4 @@
-#Use python3 antismash_summary_NEW.py /path/to/gbk/files
+#Use python3 antismash_summary.py /path/to/gbk/files
 
 #!/usr/bin/env python3
 import sys
@@ -6,10 +6,11 @@ import os
 import pandas as pd
 from Bio import SeqIO
 import linecache
+import numpy as np
 
 input_directory = sys.argv[1]
 df = pd.DataFrame(columns=['Cluster','Spades_Node','Predicted BGC_start','Predicted BGC_end','BGC length','Contig edge?','Predicted BGC Types'])
-gbk_files = [file for file in os.listdir(input_directory) if file.endswith(".gbk") and file.startswith("c")]
+gbk_files = [file for file in os.listdir(input_directory) if file.endswith(".gbk")]
 for gbk in gbk_files:
         original_id = None
         orig_start = None
@@ -34,4 +35,32 @@ for gbk in gbk_files:
                         products.extend(qualifiers["product"])
         df = df.append({'Cluster':base_name,'Spades_Node':original_id, 'Predicted BGC_start':orig_start,'Predicted BGC_end':orig_end,'BGC length':BGC_length,'Contig edge?':contig_edge,'Predicted BGC Types':products}, ignore_index=True)
 
-df.to_csv(input_directory+'/antismash_summary.txt', sep="\t", index=False)
+def remove_duplicates_and_sort(lst):
+    seen = set()
+    return sorted([x for x in lst if not (x in seen or seen.add(x))])
+
+def create_final_column(row):
+    bgc_types = row['Predicted BGC Types']
+    if len(bgc_types) > 1:
+        concatenated = '_'.join(bgc_types) + ' hybrid'
+        return concatenated
+    else:
+        return bgc_types[0]
+
+df['Sample'] = df.Spades_Node.str.split('_', expand=True)[0]
+df['Predicted BGC Types'] = df['Predicted BGC Types'].apply(remove_duplicates_and_sort)
+df['Predicted_BGC_Types_count'] = df['Predicted BGC Types'].apply(len)
+df['BGC_type'] = df.apply(create_final_column, axis=1)
+
+BGC_counts = df.groupby(['Sample','Contig edge?','BGC_type']).size().unstack(fill_value=0).reset_index()
+BGC_counts = BGC_counts.rename_axis(None, axis=1)
+sums = BGC_counts.drop(['Sample','Contig edge?'], axis=1).sum()
+sorted_columns = sums.sort_values(ascending=False).index.tolist()
+BGC_counts_reordered = BGC_counts[['Sample','Contig edge?'] + sorted_columns]
+
+total_BGC_count = df.groupby(['BGC_type','Contig edge?',]).size().unstack(fill_value=0).reset_index()
+total_BGC_count = total_BGC_count.rename_axis(None, axis=1)
+
+df.to_csv(input_directory+'/antismash_summary_details.txt', sep="\t", index=False)
+BGC_counts_reordered.to_csv(input_directory+'/BGC_counts_per_sample_per_contig_edge.txt', sep="\t", index=False)
+total_BGC_count.to_csv(input_directory+'/BGC_counts_per_sample_per_contig_edge.txt', sep="\t", index=False)
