@@ -63,4 +63,4 @@ total_BGC_count = total_BGC_count.rename_axis(None, axis=1)
 
 df.to_csv(input_directory+'/antismash_summary_details.txt', sep="\t", index=False)
 BGC_counts_reordered.to_csv(input_directory+'/BGC_counts_per_sample_per_contig_edge.txt', sep="\t", index=False)
-total_BGC_count.to_csv(input_directory+'/BGC_counts_per_sample_per_contig_edge.txt', sep="\t", index=False)
+total_BGC_count.to_csv(input_directory+'/total_BGC_count.txt', sep="\t", index=False)
