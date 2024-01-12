@@ -62,7 +62,7 @@ genus_counts <- melted %>%
 
 genus_count_map <- setNames(genus_counts$count, genus_counts$Genus)
 
-get_family_count <- function(genus) {
+get_genus_count <- function(genus) {
   count <- genus_count_map[as.character(genus)]
   return(paste(genus, sprintf("(n=%d)", count)))
 }
