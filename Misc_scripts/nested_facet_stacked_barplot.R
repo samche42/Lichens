@@ -238,3 +238,38 @@ ggplot() +
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
+
+################################################################################################
+#
+# All BGCs
+#
+################################################################################################
+
+library(ggplot2)
+library(reshape2)
+library(ggh4x)
+
+data = read.csv("All_BGCs_count.txt", header=TRUE, sep ="\t")
+melted = melt(data, id = c("Sample_name","Superkingdom","Phylum","Class","Order","Family","Genus","Species"))
+
+melted$Class <- factor(melted$Class, levels = unique(melted$Class))
+melted$Order <- factor(melted$Order, levels = unique(melted$Order))
+melted$Family <- factor(melted$Family, levels = unique(melted$Family))
+melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
+melted$Sample_name <- factor(melted$Sample_name, levels = unique(melted$Sample_name))
+
+#Getting distinct colours
+color = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)]
+custom_colors=sample(color, 4)
+
+ggplot() +
+  geom_bar(data = melted,aes(x = Sample_name, y =  value, fill = variable), stat = "identity", width = 1,position = position_stack(reverse = TRUE)) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  facet_nested(. ~ Class + Order +  Family, scales = "free", space = "free") +
+  theme(strip.text.x = element_text(angle = 90,size=5),
+        panel.spacing=unit(0,"lines"),
+        panel.background = element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
