@@ -6,7 +6,7 @@ library(ggplot2)
 
 data = read.csv("Bacterial_BGC_length_distribution.txt", header=TRUE, sep ="\t")
 
-order_levels <- c("T1PKS","NRPS-like","terpene","NRPS","NRPS_T1PKS hybrid","T3PKS","indole","NRPS-like_T1PKS hybrid","T1PKS_T3PKS hybrid","T1PKS_indole hybrid","NRPS_NRPS-like hybrid","T1PKS_terpene hybrid","betalactone","siderophore","NRPS_indole hybrid","fungal-RiPP","NRPS_T1PKS_terpene hybrid","NRPS-like_betalactone hybrid","NRPS_NRPS-like_T1PKS hybrid","NRPS-like_T1PKS_indole hybrid","Other")
+order_levels <- c("terpene","T3PKS","NRPS","NRPS-like","T1PKS","RRE-containing","arylpolyene","hserlactone","phosphonate","redox-cofactor","RiPP-like","betalactone","NRPS_T1PKS hybrid","NAPAA","lassopeptide","NRPS-like_T1PKS hybrid","hglE-KS","NRPS_NRPS-like hybrid","thioamitides","ranthipeptide","Other")
 
 data$BGC_type <- factor(data$BGC_type, levels = order_levels)
 
