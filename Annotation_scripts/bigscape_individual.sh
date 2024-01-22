@@ -5,7 +5,7 @@
 #SBATCH -N 1 # Nodes
 #SBATCH -n 1 # Tasks # try to increase task number and see any change
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=200gb # request memory, adjustable
+#SBATCH --mem-per-cpu=50gb # request memory, adjustable
 #SBATCH --error=bigscape.%J.err
 #SBATCH --output=bigscape.%J.out
 
