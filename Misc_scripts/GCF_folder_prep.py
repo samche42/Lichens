@@ -1,3 +1,5 @@
+#Creates a folder for every GCF with two or more members and then moves gbk files into the appropriate folder
+
 import pandas as pd
 import os
 import shutil
