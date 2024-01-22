@@ -9,6 +9,8 @@
 #SBATCH --error=bigscape.%J.err
 #SBATCH --output=bigscape.%J.out
 
+#Run with: for GCF in `ls -d Bacterial_AND_Fungal_BGCs/*/`; do sbatch bigscape_individual.sh -i ${GCF};done
+
 usage()
 {
    # Display Help
@@ -32,8 +34,8 @@ source activate bigscape
 bigscape.py \
         --inputdir ${input_dir} \
         --outputdir ${input_dir}/Bigscape_results \
-        -v --mibig --no_classify --mode auto \
-        --include_singletons \
+        -v --mibig --mode auto --mix \
+        --include_singletons --cutoffs 0.3 \
         --pfam_dir Databases --cores 8
 
 conda deactivate
