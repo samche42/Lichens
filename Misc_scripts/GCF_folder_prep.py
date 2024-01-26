@@ -1,5 +1,7 @@
 #Creates a folder for every GCF with two or more members and then moves gbk files into the appropriate folder
+#GCF_assignment.txt is tab-delimited file of the BGC .gbk files in the 'File' column and their assigned GCF in the 'GCF' column
 
+#!/usr/bin/env python3
 import pandas as pd
 import os
 import shutil
