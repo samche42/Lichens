@@ -18,7 +18,9 @@ melted$Family <- factor(melted$Family, levels = unique(melted$Family))
 melted$Genus <- factor(melted$Genus, levels = unique(melted$Genus))
 melted$Sample_name <- factor(melted$Sample_name, levels = unique(melted$Sample_name))
 
-ggplot(data = melted, mapping = aes(x = variable, y = Sample_name, fill = value),fill = "transparent") +
+subset <- melted[melted$value == "Yes", ] #Reduces elements that need deleting when prettying up in Illustrator
+
+ggplot(data = subset, mapping = aes(x = variable, y = Sample_name, fill = value),fill = "transparent") +
 geom_tile() +
 xlab(label = "GCF") +
 ylab(label = "Sample")
